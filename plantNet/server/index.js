@@ -51,6 +51,7 @@ async function run() {
     // collection
     const db = client.db("clientNet_DB");
     const userCollection = db.collection("users");
+    const plantCollection = db.collection("plants");
 
     // Generate jwt token
     app.post("/jwt", async (req, res) => {
@@ -98,6 +99,17 @@ async function run() {
         role: "customer",
         timeStamp: new Date(),
       });
+      res.send(result);
+    });
+
+    app.post("/plants", verifyToken, async (req, res) => {
+      const plant = req.body;
+      const result = await plantCollection.insertOne(plant);
+      res.send(result);
+    });
+
+    app.get("/plants", async (req, res) => {
+      const result = await plantCollection.find().toArray();
       res.send(result);
     });
 
