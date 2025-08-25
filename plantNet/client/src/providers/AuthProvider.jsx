@@ -56,6 +56,19 @@ const AuthProvider = ({ children }) => {
       if (currentUser?.email) {
         setUser(currentUser);
 
+        // Get user data from mongodb
+
+        const userData = {
+          name: currentUser.displayName,
+          image: currentUser.photoURL,
+          email: currentUser.email,
+        };
+
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/user/${currentUser?.email}`,
+          userData
+        );
+
         // Get JWT token
         await axios.post(
           `${import.meta.env.VITE_API_URL}/jwt`,
