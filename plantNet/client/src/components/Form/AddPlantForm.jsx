@@ -95,7 +95,12 @@ const AddPlantForm = ({
                 <div className="flex flex-col w-max mx-auto text-center">
                   <label>
                     <input
-                      onChange={(e) => setUploadImage(e.target.files[0].name)}
+                      onChange={(e) =>
+                        setUploadImage({
+                          image: e.target.files[0],
+                          url: URL.createObjectURL(e.target.files[0]),
+                        })
+                      }
                       className="text-sm cursor-pointer w-36 hidden"
                       type="file"
                       name="image"
@@ -103,8 +108,19 @@ const AddPlantForm = ({
                       accept="image/*"
                       hidden
                     />
-                    <div className="bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500">
-                      {uploadImage}
+                    <div className=" text-white rounded font-semibold cursor-pointer p-1 px-3 ">
+                      {uploadImage && uploadImage.image ? (
+                        <img
+                          src={uploadImage.url}
+                          alt="Uploaded Plant"
+                          className="w-36 h-36 object-cover"
+                        />
+                      ) : (
+                        <p className="bg-lime-600 p-1.5 rounded text-center">
+                          {" "}
+                          upload image
+                        </p>
+                      )}
                     </div>
                   </label>
                 </div>
