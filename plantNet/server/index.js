@@ -48,6 +48,10 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
+    // collection
+    const db = client.db("clientNet_DB");
+    const userCollection = db.collection("users");
+
     // Generate jwt token
     app.post("/jwt", async (req, res) => {
       const email = req.body;
@@ -75,6 +79,26 @@ async function run() {
       } catch (err) {
         res.status(500).send(err);
       }
+    });
+
+    // user save and post
+
+    app.post("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = req.body;
+      const isExist = await userCollection.findOne(query);
+
+      if (isExist) {
+        return res.send(isExist);
+      }
+
+      const result = await userCollection.insertOne({
+        ...user,
+        role: "customer",
+        timeStamp: new Date(),
+      });
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
