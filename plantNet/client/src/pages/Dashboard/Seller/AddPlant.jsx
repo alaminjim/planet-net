@@ -48,6 +48,7 @@ const AddPlant = () => {
     } finally {
       setLoading(false);
       from.reset();
+      setUploadImage({ name: "Upload Image", url: null });
     }
   };
   return (

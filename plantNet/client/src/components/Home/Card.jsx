@@ -5,7 +5,7 @@ const Card = ({ plant }) => {
   const { _id, name, category, quantity, price, imageURL } = plant;
   return (
     <Link
-      to={`/plant/1`}
+      to={`/plant/${_id}`}
       className="col-span-1 cursor-pointer group shadow-xl p-3 rounded-xl"
     >
       <div className="flex flex-col gap-2 w-full *:text-black">
