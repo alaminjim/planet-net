@@ -52,6 +52,7 @@ async function run() {
     const db = client.db("clientNet_DB");
     const userCollection = db.collection("users");
     const plantCollection = db.collection("plants");
+    const orderCollection = db.collection("orders");
 
     // Generate jwt token
     app.post("/jwt", async (req, res) => {
@@ -117,6 +118,65 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await plantCollection.findOne(query);
+      res.send(result);
+    });
+
+    // order
+
+    app.post("/order", verifyToken, async (req, res) => {
+      const order = req.body;
+      console.log(order);
+      const result = await orderCollection.insertOne(order);
+      res.send(result);
+    });
+
+    app.patch("/order/quantity/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const { quantityToUpdate } = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $inc: { quantity: -quantityToUpdate },
+      };
+      const result = await plantCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    app.get("/customer-order/:email", verifyToken, async (req, res) => {
+      const email = req.query.email;
+      const filter = { "customer.email ": email };
+      const result = await orderCollection
+        .aggregate([
+          {
+            $match: filter,
+          },
+          {
+            $addFields: {
+              plantId: { $toObjectId: "$plantId" },
+            },
+          },
+          {
+            $lookup: {
+              from: "plants",
+              localField: "plantId",
+              foreignField: "_id",
+              as: "plants",
+            },
+          },
+          { $unwind: "$plants" },
+          {
+            $addFields: {
+              name: "$plants.name",
+              imageURL: "$plants.imageURL",
+              category: "$plants.category",
+            },
+          },
+          {
+            $project: {
+              plants: 0,
+            },
+          },
+        ])
+        .toArray();
       res.send(result);
     });
 

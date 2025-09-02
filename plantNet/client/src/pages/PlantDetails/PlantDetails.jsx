@@ -17,7 +17,7 @@ const PlantDetails = () => {
     setIsOpen(false);
   };
 
-  const { data: plant } = useQuery({
+  const { data: plant, refetch } = useQuery({
     queryKey: "plants",
     queryFn: async () => {
       const res = await axiosSecure.get(`/plants/${id}`);
@@ -97,12 +97,20 @@ const PlantDetails = () => {
               Price: {plant?.price}$
             </p>
             <div>
-              <Button label="Purchase" />
+              <Button
+                onClick={() => setIsOpen(true)}
+                label={plant?.quantity > 0 ? "Purchase" : "Out Of Stock"}
+              />
             </div>
           </div>
           <hr className="my-6" />
 
-          <PurchaseModal closeModal={closeModal} isOpen={isOpen} />
+          <PurchaseModal
+            refetch={refetch}
+            plant={plant}
+            closeModal={closeModal}
+            isOpen={isOpen}
+          />
         </div>
       </div>
     </Container>
