@@ -17,7 +17,7 @@ const PlantDetails = () => {
     setIsOpen(false);
   };
 
-  const { data: plant, refetch } = useQuery({
+  const { data: plant = {}, refetch } = useQuery({
     queryKey: "plants",
     queryFn: async () => {
       const res = await axiosSecure.get(`/plants/${id}`);
@@ -68,7 +68,7 @@ const PlantDetails = () => {
                 gap-2
               "
           >
-            <div>Seller: {plant?.seller.name}</div>
+            <div>Seller: {plant?.seller?.name}</div>
 
             <img
               className="rounded-full"
@@ -76,7 +76,7 @@ const PlantDetails = () => {
               width="30"
               alt="Avatar"
               referrerPolicy="no-referrer"
-              src={plant?.seller.photo}
+              src={plant?.seller?.photo}
             />
           </div>
           <hr className="my-6" />

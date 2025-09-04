@@ -162,7 +162,9 @@ async function run() {
               as: "plants",
             },
           },
-          { $unwind: "$plants" },
+          {
+            $unwind: "$plants",
+          },
           {
             $addFields: {
               name: "$plants.name",
